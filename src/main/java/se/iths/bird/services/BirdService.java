@@ -77,7 +77,13 @@ public class BirdService implements se.iths.bird.services.Service {
     }
 
     @Override
-    public List<BirdDto> search(String name) {
+    public List<BirdDto> searchByName(String name) {
         return birdMapper.mapp(birdRepository.findAllByNameContains(name));
+    }
+
+
+    @Override
+    public List<BirdDto> searchByGender(String gender) {
+        return birdMapper.mapp(birdRepository.findAllByGender(gender));
     }
 }

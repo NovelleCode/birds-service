@@ -20,5 +20,7 @@ public interface Service {
 
     BirdDto update(Integer id, BirdWeight birdWeight);
 
-    List<BirdDto> search(String name);
+    List<BirdDto> searchByName(String name);
+
+    List<BirdDto> searchByGender(String gender);
 }

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BirdRepository extends JpaRepository<Bird, Integer> {
     List<Bird> findAllByNameContains(String name);
+    List<Bird> findAllByGender(String gender);
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import se.iths.bird.dtos.BirdDto;
 import se.iths.bird.dtos.BirdWeight;
+import se.iths.bird.entities.Bird;
 import se.iths.bird.services.Service;
 
 import java.util.List;
@@ -30,13 +31,16 @@ public class Controller {
                         "ISBN "+ id +" not found."));
     }
 
-    @GetMapping("/birds/search/{name}")
-    public List<BirdDto> search(@PathVariable String name) {
-        return service.search(name);
+    @GetMapping(value = "/birds/search", params = "name")
+    public List<BirdDto> searchByName(@RequestParam String name) {
+        return service.searchByName(name);
     }
 
+    @GetMapping(value = "/birds/search", params = "gender")
+    public List<BirdDto> searchByGender(@RequestParam String gender) {
+        return service.searchByGender(gender);
+    }
 
-    // This method should only be accessed by users with the role of 'admin'
     @PostMapping("/birds")
     @ResponseStatus(HttpStatus.CREATED)
     public BirdDto create(@RequestBody BirdDto birdDto) {

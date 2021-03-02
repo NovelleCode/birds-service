@@ -15,6 +15,9 @@ public class BirdDto {
         this.gender = gender;
     }
 
+    public BirdDto() {
+    }
+
     public int getId() {
         return id;
     }
@@ -54,4 +57,6 @@ public class BirdDto {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+
 }
