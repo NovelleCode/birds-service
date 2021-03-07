@@ -2,7 +2,6 @@ package se.iths.bird.services;
 
 import se.iths.bird.dtos.BirdDto;
 import se.iths.bird.dtos.BirdWeight;
-import se.iths.bird.entities.Bird;
 
 import java.util.List;
 import java.util.Optional;
