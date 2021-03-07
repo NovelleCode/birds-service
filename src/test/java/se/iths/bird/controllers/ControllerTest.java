@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.server.ResponseStatusException;
 import se.iths.bird.dtos.BirdDto;
 import se.iths.bird.dtos.BirdWeight;
 import se.iths.bird.services.Service;
@@ -17,6 +18,7 @@ import se.iths.bird.services.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,8 +32,6 @@ class ControllerTest {
 
     @Test
     void callingWithUrlBirdsShouldReturnAllBirds() throws Exception {
-        // Tell mockito what to return when calling methods on Service
-        // For this we do not need to create a TestService class, Mockito will make an implementation for us.
         when(service.getAllBirds()).thenReturn(List.of(new BirdDto(1, "testname", "testtype", 0.1D, "female")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/birds")
@@ -52,7 +52,7 @@ class ControllerTest {
     void callingWithUrlBirdNonExistingIdShouldReturn404Error() throws Exception {
         when(service.getOne(1)).thenReturn(Optional.of(new BirdDto(1, "testname", "testtype", 0.1D, "female")));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/birds/2")
+        mockMvc.perform(MockMvcRequestBuilders.get("/birds/{id}", 2)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
@@ -90,11 +90,21 @@ class ControllerTest {
     }
 
     @Test
-    void callingURLBirdsWithDeleteRequestShouldDeleteBird() throws Exception {
+    void callingURLBirdsWithDeleteRequestShouldReturnStatusOk() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/birds/{id}", 54)
+                .delete("/birds/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void callingURLBirdsWithDeleteRequestShouldReturnStatusNotFound() throws Exception {
+        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(service).delete(1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/birds/{id}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -116,7 +126,7 @@ class ControllerTest {
     @Test
     void callingURLBirdsWithPatchRequestShouldUpdateBirdWeight() throws Exception {
         BirdDto bird = new BirdDto(1, "Jinx", "testtype", 0.1D, "male");
-        BirdWeight birdWeight = new BirdWeight(0.5D);
+        BirdWeight birdWeight = new BirdWeight(10.5D);
         Gson gson = new Gson();
 
         when(service.update(1, birdWeight)).thenReturn(bird);
