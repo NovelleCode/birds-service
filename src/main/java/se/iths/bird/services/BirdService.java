@@ -33,8 +33,6 @@ public class BirdService implements se.iths.bird.services.Service {
         return birdMapper.mapp(birdRepository.findById(id));
     }
 
-    // TODO: 2021-02-25
-    // Add validations
     @Override
     public BirdDto createBird(BirdDto birdDto) {
         if(birdDto.getName().isEmpty() || birdDto.getGender().isEmpty() || birdDto.getType().isEmpty())
@@ -44,7 +42,8 @@ public class BirdService implements se.iths.bird.services.Service {
     
     @Override
     public void delete(Integer id) {
-        birdRepository.deleteById(id);
+        if(birdRepository.findById(id).isPresent())
+            birdRepository.deleteById(id);
     }
     
     @Override
